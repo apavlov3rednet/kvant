@@ -1,50 +1,38 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="ru-RU">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+
 </head>
 <body>
-<h3>Калькулятор</h3>
-
-<!--
-
-selector.onclick = ()=>{}
-
-createElement
-classList.toggle / add / remove / contain
-
-let div = document.createElement("div");
-let p = document.createElement("p");
-div.append(p); / prepend
-
-getAttribute
-setAttribute
-removeAttribute
-
--->
+<h2>Калькулятор</h2>
 
 <label for="" class="service">
-    <span>Замена масла двигателя: </span>
+    <span>Замена масла двигателя:</span>
     <input type="text" name="ENGINE">
 </label><br>
 
 <label for="" class="service">
-    <span>С промывкой двигателя: </span>
+    <span>Замена с промывкой:</span>
     <input type="hidden" name="ENGINE_CLEAR" value="N">
-    <input type="checkbox" name="ENGINE_CLEAR" value="Y">
+    <input type="checkbox" name="ENGINE_CLEAR"
+           data-value="0.12"
+           data-percent="12"
+           data-period="1.12" value="Y">
 </label><br>
 
 <label for="" class="service">
-    <span>Свое масло: </span>
+    <span>Замена на масло собственника</span>
     <input type="hidden" name="ENGINE_OWN" value="N">
-    <input type="checkbox" name="ENGINE_OWN" value="Y">
-</label><br>
+    <input type="checkbox" name="ENGINE_OWN"
+           data-value="0.40"
+           data-percent="40"
+           data-period="1.40" value="Y">
+</label>
 
-<div id="result">Стоимость работ: <b>0</b> руб.</div>
+<div id="result"></div>
 
 <script src="script.js"></script>
 
