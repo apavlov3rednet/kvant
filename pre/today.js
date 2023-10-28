@@ -1,42 +1,67 @@
-/*
-for ([начало]; [условие]; [шаг]) {} // Array, Map, Set
-for (let i in arr) {} //keys i Array, Map, Set
-for (let i of arr) {} //values i Array, Map, Set
------
-do {} while (условие);
-while (условие) {}
-----
+//Объявление функции
+//function definition, function declaration, function statement
+// function square(number) {
+//     return number * number;
+// }
+//---------
 
-break; continue;
+//function definition expression, anonim
+//1
+// let square = function (number) { //anonim
+//     return number * number;
+// };
+// let x = square(4);
+// console.log(x);
 
-----
-Условные конструкторы
-if else
-switch case
---
-*/
 
-/*
+//2
+// let factorial = function fac(n) { //naming
+//     return n < 2 ? 1 : n * fac(n - 1);
+// };
+//
+// console.log(factorial(3));
 
-let fuel = {
-    'gaz': ['АИ-92', 'АИ-95', 'АИ-98', 'АИ-100'],
-    'diesel' : ['winter', 'summer'],
-    'gas' : ['propane', 'methane']
-};
+//3
+// function map(f, a) {
+//     let result = [];
+//     let i;
+//     for (i = 0; i != a.length; i++) result[i] = f(a[i]); //t
+//     return result;
+// }
+// let f = function (x) {
+//     return x * x * x;
+// };
+// let numbers = [0, 1, 2, 5, 10];
+// let cube = map(f, numbers);
+// console.log(cube);
 
-let tax = {
-    '100' => 13,
-    '200' => 16,
-    '300' => 20
-}
+//Вызов функции
+//square(5);
 
-let engine = {
-    'ENGINE_TYPE' : 'gaz',
-    'ENGINE_VOLUME' : 1.6,
-    'HORSE_POWER' : 140,
-}
+//hoisting, поднятие
+// console.log(square(5));
+// function square(n) {
+//     return n * n;
+// }
 
-Если бензиновый двигатель, то типы используемого топлива АИ-92, АИ-95, АИ-98, АИ-100
-Если дизель - Зимняя/Летняя
-Газ - пропан/метан
- */
+//Область видимости
+
+//Scope and stack
+// var foo = function bar() { //bar(), arguments.callee(), foo() - recursive
+//
+// };
+// function foo(i) {//stack
+//   if (i < 0) return;
+//   console.log("begin: " + i);
+//   foo(i - 1);
+//   console.log("end: " + i);
+// }
+// foo(3);
+
+//Вложенные функции, инкапсуляция и зависимости переменных
+//Замыкания
+//Arguments
+//Parameters
+//Rest ...
+//Arrow function
+//this
