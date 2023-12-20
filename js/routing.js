@@ -134,7 +134,7 @@ class Routing {
         if(url !== 'error') {
             Routing.ajax(url, {
                 title: title,
-                callback: callback
+                onsuccess: callback
             }); 
         }
 
