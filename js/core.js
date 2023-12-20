@@ -8,7 +8,7 @@
 
     menuList.forEach((item, i) => {
         item.addEventListener('click', function() {
-            let content = r.getContent(i, View.setContent);
+            r.getContent(i, View.setContent);
         });
     });
 })(window);

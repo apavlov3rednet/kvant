@@ -101,9 +101,8 @@ class Routing {
             if(params.onsuccess && params.onsuccess instanceof Function) {
                 let data = params;
                 data.answer = answer;
-
-                console.log(data);
                 params.onsuccess(data);
+                return true;
             }
                 
             else return answer;
