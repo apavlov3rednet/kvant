@@ -98,8 +98,14 @@ class Routing {
             return response.text();
         })
         .then(answer => {
-            if(params.callback && params.callback instanceof Function)
-                params.callback({title: params.title, answer: answer});
+            if(params.onsuccess && params.onsuccess instanceof Function) {
+                let data = params;
+                data.answer = answer;
+
+                console.log(data);
+                params.onsuccess(data);
+            }
+                
             else return answer;
         });
     }
