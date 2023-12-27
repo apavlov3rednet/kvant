@@ -1,22 +1,18 @@
-class Owner
+class Owner 
 {
-    firstName = '';
-    lastName = '';
-    secondName;
-    bdate;
-    #obOwner = {};
+    #data = {};
 
-    constructor(firstName, lastName, secondName, bdate) {
+    constructor(firstName = '', lastName = '', secondName, bdate) {
         if(typeof firstName != 'string' || typeof lastName != 'string')
-            return false;
+        return false;
 
-        this.#obOwner = {
-            firstName: firstName,
-            lastName: lastName
+        this.#data = {
+            firstName : firstName,
+            lastName : lastName
         }
 
-        if(typeof secondName === 'string' && secondName!="")
-                this.#obOwner.secondName = secondName;
+        if(typeof secondName === 'string' && secondName != "")
+            this.#data.secondName = secondName;
 
         if(bdate instanceof Date)
             this.setBDate(bdate);
@@ -24,21 +20,20 @@ class Owner
 
     setBDate(date) {
         let d = new Date(date);
-        this.#obOwner.dateBD = d;
-    }
-
-    get data() {
-        return this.#obOwner;
+        this.#data.dateBD = d;
     }
 
     get sName() {
-        if(this.#obOwner.secondName)
-            return this.#obOwner.secondName;
+        if(this.#data.secondName)
+                return this.#data.secondName;
     }
 
     get fullName() {
-        if(Object.keys(this.#obOwner).lenght > 0) {
-            return [this.#obOwner.lastName, this.#obOwner.firstName, this.sName].join(' ');
-        }
+        if(Object.keys(this.#data).length > 0)
+            return [this.#data.lastName, this.#data.firstName, this.sName].join(' ');
+    }
+
+    get data() {
+        return this.#data;
     }
 }

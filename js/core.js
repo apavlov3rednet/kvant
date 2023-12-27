@@ -1,13 +1,13 @@
+"use strict";
+
 (function () {
-    let db = [...localStorage];
+    //БД
+    let db = localStorage;
 
-    console.log(db)
-
-    //Меню
+    //Элементы разметки
     let menuList = document.body.querySelectorAll('menu li');
-    let obContent = document.getElementById('content');
-
-    //Маршрутизация
+    let content = document.getElementById('content');
+    
     let r = new Routing();
     r.treeRoutes(menuList);
 
@@ -16,6 +16,24 @@
             r.getContent(i, View.setContent);
         });
     });
+
+    //Загрузка по умолчанию
+    let arHead = ['Название таблицы', 'Кол-во записей'];
+    let arBody = [];
+
+    for(let i in db) {
+        let count = DB.count(i);
+
+        if(count > 0) {
+            arBody.push([i, count]);
+        }
+    }
+
+    let table = Table.generate(arHead, arBody, [], {
+        className: 'simple-table'
+    });
+
+    content.append(table);
 
 
 })(window);

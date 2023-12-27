@@ -1,36 +1,40 @@
 class View {
-    constructor() {
-    }
-
-    static setContent(content) {
+    static setContent(data = {}) {
         let obContent = document.getElementById('content');
-        let title = content.title;
-        obContent.innerHTML = content.answer;
-
-        let obForm = obContent.querySelector('form');
-        let h1 = document.querySelector('h1');
+        let obH1 = document.querySelector('h1');
         let obTitle = document.querySelector('title');
 
-        h1.innerHTML = title;
-        obTitle.innerHTML = title;
+        obH1.innerHTML = data.title;
+        obTitle.innerHTML = data.title;
+        obContent.innerHTML = data.answer;
+
+        let obForm = obContent.querySelector('form');
 
         if(obForm) {
             let dbName = obForm.id;
-            let db = DB.getValue(dbName) || [];
+            let db = DB.get(dbName) || [];
             let arSelect = obForm.querySelectorAll('select');
 
-            View.bindSendForm(obForm, db, dbName, arSelect);
+            View.bindSendForm(obForm, db, dbName);
 
-            arSelect.forEach(select => {
-                let dbSelect = DB.getValue(select.getAttribute('name').toLowerCase()) || [];
-                View.updateSelect(select, dbSelect);
+            arSelect.forEach(item => {
+                let name = item.getAttribute('name').toLowerCase() + 's';
+                let db2 =  DB.get(name) || [];
+                View.updateList(item, db2);
             });
         }
     }
 
-    static bindSendForm(obForm, arData, dbName, callback) {
-        obForm.addEventListener("submit", function (e) {
-            e.preventDefault(); //Отмена штатного поведения
+    /**
+     * 
+     * @param {*} obForm 
+     * @param {*} arr 
+     * @param {*} db 
+     * @param {*} callback Function
+     */
+    static bindSendForm(obForm, arr, db, callback) {
+        obForm.addEventListener("submit", function (event) {
+            event.preventDefault();
 
             let arFields = obForm.querySelectorAll("input, select");
             let model = new Model();
@@ -51,27 +55,27 @@ class View {
                 }
             });
 
-            arData.push(model);
+            arr.push(model);
 
-            DB.setValue(dbName, arData);
+            DB.set(db, arr);
         });
     }
 
-    static updateSelect(select, ar, titleChoice = "Выберите") {
-        let children = [];
+    static updateList(select, arr, title = "Выберите") {
+        let childrens = [];
 
         select.innerHTML = "";
 
-        children.push(
+        childrens.push(
             DOM.create("option", {
                 attrs: { value: 0 },
-                text: titleChoice,
+                text: title,
             })
         );
 
-        ar.forEach((item) => {
+        arr.forEach((item) => {
             if (Object.keys(item).length > 0) {
-                children.push(
+                childrens.push(
                     DOM.create("option", {
                         attrs: { value: item.id },
                         text: Object.values(item.params).join(" "),
@@ -81,7 +85,20 @@ class View {
         });
 
         DOM.adjust(select, {
-            children: children,
+            children: childrens,
+            events: {
+                //Стартуем отслеживание события Изменение поля
+                change: function(event) {
+                    if(select.dataset.rel) { //Проверяем есть ли связанное поле
+                        let id = select.value; //Получаем значение текущего поля
+                        let relationSelect = document.querySelector('[name='+select.dataset.rel+']'); //Получаем объект связанного поля
+                        let dbName = relationSelect.getAttribute('name').toLowerCase() + 's'; //Получаем имя БД связанного поля
+                        let arDb = DB.get(dbName).filter(item => item.params[select.getAttribute('name')] === id) || []; //Получаем только те записи из БД которые соответствуют значению текущего поля
+
+                        View.updateList(relationSelect, arDb); //Обновляем связанное поле
+                    }
+                }
+            }
         });
     }
 }
