@@ -35,5 +35,4 @@
 
     content.append(table);
 
-
 })(window);
