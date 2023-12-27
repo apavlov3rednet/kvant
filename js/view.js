@@ -1,40 +1,73 @@
 class View {
-    static setContent(data = {}) {
-        let obContent = document.getElementById('content');
-        let obH1 = document.querySelector('h1');
+    constructor() {
+    }
+
+    static setContent(content) {
+        let obFormContent = document.getElementById('form');
+        let title = content.title;
+        obFormContent.innerHTML = content.answer;
+
+        let obForm = obFormContent.querySelector('form');
+        let h1 = document.querySelector('h1');
         let obTitle = document.querySelector('title');
 
-        obH1.innerHTML = data.title;
-        obTitle.innerHTML = data.title;
-        obContent.innerHTML = data.answer;
-
-        let obForm = obContent.querySelector('form');
+        h1.innerHTML = title;
+        obTitle.innerHTML = title;
 
         if(obForm) {
             let dbName = obForm.id;
             let db = DB.get(dbName) || [];
             let arSelect = obForm.querySelectorAll('select');
 
-            View.bindSendForm(obForm, db, dbName);
+            View.bindSendForm(obForm, db, dbName, arSelect);
+            View.setTable(dbName);
 
-            arSelect.forEach(item => {
-                let name = item.getAttribute('name').toLowerCase() + 's';
-                let db2 =  DB.get(name) || [];
-                View.updateList(item, db2);
+            arSelect.forEach(select => {
+                let dbSelect = DB.get(select.getAttribute('name').toLowerCase()) || [];
+                View.updateSelect(select, dbSelect);
             });
         }
     }
 
-    /**
-     * 
-     * @param {*} obForm 
-     * @param {*} arr 
-     * @param {*} db 
-     * @param {*} callback Function
-     */
-    static bindSendForm(obForm, arr, db, callback) {
-        obForm.addEventListener("submit", function (event) {
-            event.preventDefault();
+    static setTable(baseName) {
+        let dbValues = DB.get(baseName) || [];
+        let data = [];
+        let arHead = [];
+        let obContent = document.getElementById('content');
+
+        if(dbValues instanceof Array) {
+            dbValues.forEach((item, index) => {
+                let row = [];
+                row.push(item.id);
+
+                if(index == 0)
+                    arHead.push('ID');
+
+                for(let i in item.params) {
+                    row.push(item.params[i]);
+                    
+                    if(index == 0)
+                        arHead.push(i);
+                }
+
+                data.push(row);
+            });
+        }
+
+        let table = Table.generate(arHead, data, [], {
+            className: 'simple-table'
+        });
+
+        obContent.innerHTML = "";
+
+        DOM.adjust(obContent, {
+            children: [table]
+        });
+    }
+
+    static bindSendForm(obForm, arData, dbName, callback) {
+        obForm.addEventListener("submit", function (e) {
+            e.preventDefault(); //Отмена штатного поведения
 
             let arFields = obForm.querySelectorAll("input, select");
             let model = new Model();
@@ -55,27 +88,28 @@ class View {
                 }
             });
 
-            arr.push(model);
+            arData.push(model);
 
-            DB.set(db, arr);
+            DB.set(dbName, arData);
+            View.setTable(dbName);
         });
     }
 
-    static updateList(select, arr, title = "Выберите") {
-        let childrens = [];
+    static updateSelect(select, ar, titleChoice = "Выберите") {
+        let children = [];
 
         select.innerHTML = "";
 
-        childrens.push(
+        children.push(
             DOM.create("option", {
                 attrs: { value: 0 },
-                text: title,
+                text: titleChoice,
             })
         );
 
-        arr.forEach((item) => {
+        ar.forEach((item) => {
             if (Object.keys(item).length > 0) {
-                childrens.push(
+                children.push(
                     DOM.create("option", {
                         attrs: { value: item.id },
                         text: Object.values(item.params).join(" "),
@@ -85,17 +119,16 @@ class View {
         });
 
         DOM.adjust(select, {
-            children: childrens,
+            children: children,
             events: {
-                //Стартуем отслеживание события Изменение поля
                 change: function(event) {
-                    if(select.dataset.rel) { //Проверяем есть ли связанное поле
-                        let id = select.value; //Получаем значение текущего поля
-                        let relationSelect = document.querySelector('[name='+select.dataset.rel+']'); //Получаем объект связанного поля
-                        let dbName = relationSelect.getAttribute('name').toLowerCase() + 's'; //Получаем имя БД связанного поля
-                        let arDb = DB.get(dbName).filter(item => item.params[select.getAttribute('name')] === id) || []; //Получаем только те записи из БД которые соответствуют значению текущего поля
-
-                        View.updateList(relationSelect, arDb); //Обновляем связанное поле
+                    if(select.dataset.rel) {
+                        let id = select.value;
+                        let relSelect = document.body.querySelector('[name='+select.dataset.rel+']');
+                        let db = relSelect.getAttribute('name').toLowerCase();
+                        let arDB = DB.get(db).filter(item => item.params[select.getAttribute('name')] === id) || [];
+                    
+                        View.updateSelect(relSelect, arDB);
                     }
                 }
             }
