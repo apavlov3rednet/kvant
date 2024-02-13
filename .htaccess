@@ -1,3 +1,37 @@
-RewriteEngine on
-RewriteEngine %{REQUEST_URI} ^/views/owners/?.*$
-RewriteEngine %{REQUEST_URI} =GET
+AddDefaultCharset utf8
+Options +FollowSymLinks
+RewriteEngine On
+
+#Option -Indexes
+#ErrorDocument 404 /404
+#ErrorDocument 403 /index.html
+
+#<IfModule mod_php.c>
+    #php_flag session.use_trans_sid off
+#</IfModule>
+
+#<IfModule mod_php8.c>
+    #php_flag session.use_trans_sid off
+#</IfModule>
+
+<IfModule mod_rewrite.c>
+    Options +FollowSymLinks
+    RewriteEngine On
+    RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\/index\.php\ HTTP/
+    #RewriteRule ^index\.php$ group7 / [R=301, L]
+    RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\/index\.html\ HTTP/
+    #RewriteRule ^index\.html$ group7 / [R=301, L]
+</IfModule>
+
+<IfModule mod_dir.c>
+    DirectoryIndex / index.php index.html
+</IfModule>
+
+#<IfModule mod_expires.c>
+    #ExpiresActive on
+    #ExpiresType image/jpeg "access plus 3 day"
+    #ExpiresType image/gif "access plus 3 day"
+    #ExpiresType image/png "access plus 3 day"
+    #ExpiresType text/css "access plus 3 day"
+    #ExpiresType application/javascript "access plus 3 day"
+#</IfModule>
