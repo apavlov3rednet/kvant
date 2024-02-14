@@ -4,7 +4,7 @@ const path = require('path');
 
 const app = express();
 
-const PORT = 3000;
+const PORT = 8000;
 
 const createPath = (page, dir = 'views', ext = 'html') => {
     return path.resolve(__dirname, dir, `${page}.html`)
@@ -21,6 +21,14 @@ const createPath = (page, dir = 'views', ext = 'html') => {
 // });
 
 app.use(morgan(':method :url :status :res[content-lenght] - :response-time ms'));
+
+app.use((req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Method', 'GET');
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    next();
+});
 
 app.set('views', 'views');
 
