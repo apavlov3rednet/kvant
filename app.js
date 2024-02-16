@@ -20,6 +20,10 @@ const createPath = (page, dir = 'views', ext = 'html') => {
 //     next(); //возвращаем контроль серверу
 // });
 
+function isFolder(path) {
+    return fs.lstatSync(path).isDirectory() && fs.existsSync(path);
+}
+
 app.use(morgan(':method :url :status :res[content-lenght] - :response-time ms'));
 
 app.use((req, res) => {
@@ -53,5 +57,5 @@ app.use((req, res) => {
 });
 
 app.listen(PORT, (error) => {
-    (error) ? console.log(error) : console.log('Server start listen');
+    (error) ? console.log(error) : console.log('Server start listen on port ' + PORT);
 });
