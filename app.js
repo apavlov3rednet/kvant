@@ -26,7 +26,7 @@ function isFolder(path) {
 
 app.use(morgan(':method :url :status :res[content-lenght] - :response-time ms'));
 
-app.use((req, res) => {
+app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Method', 'GET');
     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
@@ -43,7 +43,9 @@ app.use(express.static(`public`));
 app.get('/', (req, res) => {
     const title = 'Home';
     res.sendFile(createPath('index'), {title});
+    res.end(JSON.stringify(res.body));
 });
+
 
 app.get('/index.html', (req, res) => {
     res.redirect('/');
